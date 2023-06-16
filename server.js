@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/users");
+const reportRoutes = require("./routes/reports");
 const errorHandler = require("./middlewares/error");
 
 
@@ -21,8 +22,9 @@ app.use(express.json());
 
 // Routes
 app.use("/api/", userRoutes);
+app.use("/api/", reportRoutes);
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
   return res.json({
     message: "Welcome to the Node.js REST API using ExpressJS and MongoDB"
   });
