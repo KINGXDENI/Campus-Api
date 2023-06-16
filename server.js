@@ -23,6 +23,17 @@ app.use(express.json());
 // Routes
 app.use("/api/", userRoutes);
 app.use("/api/", reportRoutes);
+app.get('/images/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const imagePath = path.join(__dirname, 'public', 'images', filename);
+  res.set('Content-Type', 'image/jpeg'); // Atur tipe konten gambar
+  res.sendFile(imagePath);
+});
+
+app.use(cors({
+  origin: process.env.ORIGIN || 'http://localhost:5173', // Atur origin sesuai dengan URL frontend React
+  credentials: true, // Jika Anda mengizinkan pengiriman cookie atau header lain dalam permintaan
+}));
 
 app.get("/", (req, res) => {
   return res.json({
