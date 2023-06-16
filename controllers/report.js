@@ -3,7 +3,6 @@ const fs = require('fs');
 const Report = require('../models/Report');
 const multer = require('multer');
 
-// Konfigurasi penyimpanan file menggunakan multer
 const storage = multer.diskStorage({
     destination: './public/images',
     filename: (req, file, cb) => {
@@ -35,13 +34,6 @@ const upload = multer({
 
 const saveReport = async (req, res) => {
     try {
-        const {
-            title,
-            lokasi,
-            nim,
-            deskripsi
-        } = req.body;
-
         upload(req, res, async (err) => {
             if (err instanceof multer.MulterError) {
                 // Penanganan kesalahan multer
@@ -67,6 +59,13 @@ const saveReport = async (req, res) => {
                     msg: 'No File Uploaded'
                 });
             }
+
+            const {
+                title,
+                lokasi,
+                nim,
+                deskripsi
+            } = req.body;
 
             const fileName = req.file.filename;
             const url = `${req.protocol}://${req.get('host')}/images/${fileName}`;
@@ -99,6 +98,7 @@ const saveReport = async (req, res) => {
         });
     }
 };
+
 
 const getReports = async (req, res) => {
     try {
