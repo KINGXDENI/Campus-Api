@@ -145,7 +145,6 @@ const getUser = async (req, res) => {
 const createUser = async (req, res, next) => {
   try {
     const {
-      name,
       email,
       password,
       role,
@@ -154,7 +153,7 @@ const createUser = async (req, res, next) => {
       jurusan,
       fakultas
     } = req.body;
-    if (!name || !email || !password || !role || !nama || !nim || !jurusan || !fakultas) {
+    if (!email || !password || !role || !nama || !nim || !jurusan || !fakultas) {
       res.status(400);
       return next(new Error("name, email, password, role, nama, nim, jurusan, and fakultas fields are required"));
     }
