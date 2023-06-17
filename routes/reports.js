@@ -17,8 +17,8 @@ router.get('/report/:id', getReportById);
 // POST /reports
 router.post('/report', saveReport);
 
-// PUT /reports/:id
-router.put('/report/:id', updateReport);
+// patch /reports/:id
+router.patch('/report/:id', updateReport);
 
 // DELETE /reports/:id
 router.delete('/:id', deleteReport);
