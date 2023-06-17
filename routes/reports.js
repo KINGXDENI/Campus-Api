@@ -21,6 +21,6 @@ router.post('/report', saveReport);
 router.patch('/report/:id', updateReport);
 
 // DELETE /reports/:id
-router.delete('/:id', deleteReport);
+router.delete('/report/:id', deleteReport);
 
 module.exports = router;
