@@ -114,19 +114,17 @@ const getReports = async (req, res) => {
 
 const getReportById = async (req, res) => {
     try {
-        const response = await Report.findOne({
-            where: {
-                id: req.params.id,
-            },
+        const report = await Report.findOne({
+            _id: req.params.id,
         });
 
-        if (!response) {
+        if (!report) {
             return res.status(404).json({
                 msg: 'No Data Found'
             });
         }
 
-        res.json(response);
+        res.json(report);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({
@@ -134,6 +132,8 @@ const getReportById = async (req, res) => {
         });
     }
 };
+
+
 
 const updateReport = async (req, res) => {
     try {
