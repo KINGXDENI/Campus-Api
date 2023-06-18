@@ -138,9 +138,7 @@ const getReportById = async (req, res) => {
 const updateReport = async (req, res) => {
     try {
         const report = await Report.findOne({
-
-            __dirnameid: req.params.id,
-
+            _id: req.params.id,
         });
 
         if (!report) {
@@ -190,16 +188,17 @@ const updateReport = async (req, res) => {
 
         const url = `${req.protocol}://${req.get('host')}/images/${fileName}`;
 
-        await Report.update({
+        await Report.findOneAndUpdate({
+            _id: req.params.id
+        }, {
             perihal: title,
             lokasi: lokasi,
             gambar: fileName,
             deskripsi: deskripsi,
             URL: url,
             status: status,
-        }, {
-            _id: req.params.id,
         });
+
 
         res.status(200).json({
             msg: 'Report Updated Successfully'
