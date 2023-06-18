@@ -138,9 +138,9 @@ const getReportById = async (req, res) => {
 const updateReport = async (req, res) => {
     try {
         const report = await Report.findOne({
-            where: {
-                id: req.params.id,
-            },
+
+            __dirnameid: req.params.id,
+
         });
 
         if (!report) {
@@ -198,9 +198,7 @@ const updateReport = async (req, res) => {
             URL: url,
             status: status,
         }, {
-            where: {
-                id: req.params.id,
-            },
+            _id: req.params.id,
         });
 
         res.status(200).json({
@@ -217,9 +215,7 @@ const updateReport = async (req, res) => {
 const deleteReport = async (req, res) => {
     try {
         const report = await Report.findOne({
-            where: {
-                id: req.params.id,
-            },
+            _id: req.params.id,
         });
 
         if (!report) {
@@ -234,10 +230,8 @@ const deleteReport = async (req, res) => {
             fs.unlinkSync(filepath);
         }
 
-        await Report.destroy({
-            where: {
-                id: req.params.id,
-            },
+        await Report.deleteOne({
+            _id: req.params.id,
         });
 
         res.status(200).json({
@@ -250,6 +244,8 @@ const deleteReport = async (req, res) => {
         });
     }
 };
+
+
 
 module.exports = {
     getReports,
