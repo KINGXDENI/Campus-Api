@@ -13,6 +13,11 @@ const addLike = async (req, res) => {
     // Menemukan report berdasarkan ID
     const report = await Report.findById(id);
 
+    // Memeriksa apakah report.likes adalah array
+    if (!Array.isArray(report.likes)) {
+      report.likes = [];
+    }
+
     // Memeriksa apakah pengguna dengan NIM yang sama sudah melike sebelumnya
     if (report.likes.find(like => like.nim === nim)) {
       return res.status(409).json({
@@ -36,6 +41,7 @@ const addLike = async (req, res) => {
     });
   }
 };
+
 
 const removeLike = async (req, res) => {
   try {
