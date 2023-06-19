@@ -136,9 +136,21 @@ const getReportById = async (req, res) => {
 
 
 const updateReport = async (req, res) => {
-    try {
+     upload(req, res, async function (err) {
+        if (err instanceof multer.MulterError) {
+            // A Multer error occurred during file upload
+            return res.status(422).json({
+                msg: err.message
+            });
+        } else if (err) {
+            // An unknown error occurred during file upload
+            return res.status(500).json({
+                msg: err.message
+            });
+        }
+
         const report = await Report.findOne({
-            _id: req.params.id,
+            _id: req.params.id
         });
 
         if (!report) {
@@ -150,17 +162,15 @@ const updateReport = async (req, res) => {
         const {
             lokasi,
             deskripsi,
-            title,
+            perihal,
             status
         } = req.body;
 
-        let fileName = report.gambar;
+        let gambarName = report.gambar;
 
-        if (req.files && req.files.file) {
-            const file = req.files.file;
-            const fileSize = file.data.length;
-            const ext = path.extname(file.name);
-            fileName = file.md5 + ext;
+        if (req.file) {
+            const ext = path.extname(req.file.originalname);
+            gambarName = req.file.md5 + ext;
             const allowedTypes = ['.png', '.jpg', '.jpeg'];
 
             if (!allowedTypes.includes(ext.toLowerCase())) {
@@ -168,47 +178,35 @@ const updateReport = async (req, res) => {
                     msg: 'Invalid Image Type'
                 });
             }
-            if (fileSize > 5000000) {
-                return res.status(422).json({
-                    msg: 'Image must be less than 5 MB'
-                });
-            }
 
-            const filepath = `./public/images/${report.gambar}`;
-            fs.unlinkSync(filepath);
-
-            file.mv(`./public/images/${fileName}`, (err) => {
-                if (err) {
-                    return res.status(500).json({
-                        msg: err.message
-                    });
-                }
-            });
+            const gambarpath = `./public/images/${report.gambar}`;
+            fs.unlinkSync(gambarpath);
         }
 
-        const url = `${req.protocol}://${req.get('host')}/images/${fileName}`;
+        const url = `${req.protocol}://${req.get('host')}/images/${gambarName}`;
 
-        await Report.findOneAndUpdate({
-            _id: req.params.id
-        }, {
-            perihal: title,
-            lokasi: lokasi,
-            gambar: fileName,
-            deskripsi: deskripsi,
-            URL: url,
-            status: status,
-        });
+        try {
+            await Report.updateOne({
+                _id: req.params.id
+            }, {
+                perihal: perihal,
+                lokasi: lokasi,
+                gambar: gambarName,
+                deskripsi: deskripsi,
+                URL: url,
+                status: status,
+            });
 
-
-        res.status(200).json({
-            msg: 'Report Updated Successfully'
-        });
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            msg: 'Internal Server Error'
-        });
-    }
+            res.status(200).json({
+                msg: 'Report Updated Successfully'
+            });
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).json({
+                msg: 'Internal Server Error'
+            });
+        }
+    });
 };
 
 const deleteReport = async (req, res) => {
