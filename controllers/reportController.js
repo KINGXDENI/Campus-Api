@@ -162,8 +162,14 @@ const updateReport = async (req, res) => {
                 });
             }
 
-            const gambarpath = path.join('./public/images', report.gambar);
-            fs.unlinkSync(gambarpath);
+            const oldImagePath = path.join(__dirname, '../public/images', report.gambar);
+            const newImagePath = path.join(__dirname, '../public/images', gambarName);
+
+            // Rename the uploaded file
+            fs.renameSync(req.file.path, newImagePath);
+
+            // Delete the old image file
+            fs.unlinkSync(oldImagePath);
         }
 
         const url = `${req.protocol}://${req.get('host')}/images/${gambarName}`;
@@ -191,6 +197,7 @@ const updateReport = async (req, res) => {
         }
     });
 };
+
 
 const deleteReport = async (req, res) => {
     try {
