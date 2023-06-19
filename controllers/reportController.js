@@ -138,7 +138,7 @@ const updateReport = async (req, res) => {
 
         if (!report) {
             return res.status(404).json({
-                msg: 'No Data Found'
+                msg: 'No Data Found',
             });
         }
 
@@ -153,16 +153,16 @@ const updateReport = async (req, res) => {
 
         if (req.file) {
             const ext = path.extname(req.file.originalname);
-            gambarName = req.file.md5 + ext;
+            gambarName = crypto.randomBytes(16).toString('hex') + ext;
             const allowedTypes = ['.png', '.jpg', '.jpeg'];
 
             if (!allowedTypes.includes(ext.toLowerCase())) {
                 return res.status(422).json({
-                    msg: 'Invalid Image Type'
+                    msg: 'Invalid Image Type',
                 });
             }
 
-            const gambarpath = `./public/images/${report.gambar}`;
+            const gambarpath = path.join('./public/images', report.gambar);
             fs.unlinkSync(gambarpath);
         }
 
@@ -181,12 +181,12 @@ const updateReport = async (req, res) => {
             });
 
             res.status(200).json({
-                msg: 'Report Updated Successfully'
+                msg: 'Report Updated Successfully',
             });
         } catch (error) {
             console.log(error.message);
             res.status(500).json({
-                msg: 'Internal Server Error'
+                msg: 'Internal Server Error',
             });
         }
     });
