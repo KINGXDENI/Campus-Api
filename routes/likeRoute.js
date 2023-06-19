@@ -3,7 +3,7 @@ const { addLike, getLikesByReportId } = require('../controllers/likeController.j
 const router = express.Router();
 
 // Definisikan rute untuk menambahkan like
-router.post('/reports/:id/like', addLike);
-router.get('/reports/:id/like', getLikesByReportId);
+router.post('/report/:id/like', addLike);
+router.get('/report/:id/like', getLikesByReportId);
 
 module.exports = router;
