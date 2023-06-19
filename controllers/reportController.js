@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const Report = require('../models/Report');
+const Report = require('../models/ReportModel');
 const multer = require('multer');
 
 const storage = multer.diskStorage({

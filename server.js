@@ -4,8 +4,10 @@ const express = require("express");
 const cors = require("cors");
 
 const connectDB = require("./config/db");
-const userRoutes = require("./routes/users");
-const reportRoutes = require("./routes/reports");
+const userRoutes = require("./routes/usersRoute");
+const reportRoutes = require("./routes/reportsRoute");
+const likeRoutes = require("./routes/likeRoute");
+const searchRoutes = require("./routes/searchRoute");
 const errorHandler = require("./middlewares/error");
 
 
@@ -23,6 +25,8 @@ app.use(express.static('public'));
 // Routes
 app.use("/api/", userRoutes);
 app.use("/api/", reportRoutes);
+app.use("/api/", likeRoutes);
+app.use("/api/", searchRoutes);
 app.get('/images/:filename', (req, res) => {
   const filename = req.params.filename;
   const imagePath = path.join(__dirname, 'public', 'images', filename);

@@ -6,7 +6,7 @@ const {
     saveReport,
     updateReport,
     deleteReport
-} = require('../controllers/report');
+} = require('../controllers/reportController');
 
 // GET /reports
 router.get('/report', getReports);
