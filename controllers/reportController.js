@@ -3,100 +3,83 @@ const fs = require('fs');
 const Report = require('../models/ReportModel');
 const multer = require('multer');
 
+const crypto = require('crypto');
+
 const storage = multer.diskStorage({
-    destination: './public/images',
-    filename: (req, file, cb) => {
+    destination: function (req, file, cb) {
+        cb(null, './public/images');
+    },
+    filename: function (req, file, cb) {
         const ext = path.extname(file.originalname);
-        const fileName = file.fieldname + '-' + Date.now() + ext;
-        cb(null, fileName);
+        const gambarName = crypto.randomBytes(16).toString('hex') + ext;
+        cb(null, gambarName);
     }
 });
 
-// Filter tipe file yang diizinkan
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['.png', '.jpg', '.jpeg'];
-    const ext = path.extname(file.originalname);
-    if (allowedTypes.includes(ext.toLowerCase())) {
-        cb(null, true);
-    } else {
-        cb(new Error('Invalid Image Type'));
-    }
-};
-
-// Inisialisasi multer dengan konfigurasi yang telah ditentukan
 const upload = multer({
     storage: storage,
-    fileFilter: fileFilter,
     limits: {
-        fileSize: 5000000 // Batasan ukuran file: 5MB
+        fileSize: 5000000
+    },
+    fileFilter: function (req, file, cb) {
+        const allowedTypes = ['.png', '.jpg', '.jpeg'];
+        const ext = path.extname(file.originalname);
+        if (!allowedTypes.includes(ext.toLowerCase())) {
+            return cb(new Error('Invalid Image Type'));
+        }
+        cb(null, true);
     }
-}).single('file');
+});
 
-const saveReport = async (req, res) => {
-    try {
-        upload(req, res, async (err) => {
-            if (err instanceof multer.MulterError) {
-                // Penanganan kesalahan multer
-                if (err.code === 'LIMIT_FILE_SIZE') {
-                    return res.status(422).json({
-                        msg: 'Image must be less than 5 MB'
-                    });
-                } else {
-                    return res.status(500).json({
-                        msg: 'Failed to upload file'
-                    });
-                }
-            } else if (err) {
-                // Penanganan kesalahan lainnya
-                console.log(err);
-                return res.status(500).json({
-                    msg: 'Failed to upload file'
-                });
-            }
+const saveReport = (req, res) => {
+    upload.single('gambar')(req, res, async function (err) {
+        if (err instanceof multer.MulterError) {
+            // A Multer error occurred during file upload
+            return res.status(422).json({
+                msg: err.message
+            });
+        } else if (err) {
+            // An unknown error occurred during file upload
+            return res.status(500).json({
+                msg: err.message
+            });
+        }
 
-            if (!req.file) {
-                return res.status(400).json({
-                    msg: 'No File Uploaded'
-                });
-            }
+        if (!req.file) {
+            return res.status(400).json({
+                msg: 'No gambar Uploaded'
+            });
+        }
 
-            const {
-                title,
-                lokasi,
-                nim,
-                deskripsi
-            } = req.body;
+        const perihal = req.body.perihal;
+        const gambarName = req.file.filename;
+        const lokasi = req.body.lokasi;
+        const nim = req.body.nim;
+        const deskripsi = req.body.deskripsi;
+        const url = `${req.protocol}://${req.get('host')}/images/${gambarName}`;
 
-            const fileName = req.file.filename;
-            const url = `${req.protocol}://${req.get('host')}/images/${fileName}`;
+        try {
+            const newReport = new Report({
+                perihal: perihal,
+                lokasi: lokasi,
+                gambar: gambarName,
+                deskripsi: deskripsi,
+                URL: url,
+                status: 'Diproses',
+                nim: nim,
+            });
+            await newReport.save();
 
-            try {
-                await Report.create({
-                    perihal: title,
-                    lokasi: lokasi,
-                    gambar: fileName,
-                    deskripsi: deskripsi,
-                    URL: url,
-                    status: 'Diproses',
-                    nim: nim,
-                });
-
-                res.status(201).json({
-                    msg: 'Report Created Successfully'
-                });
-            } catch (error) {
-                console.log(error);
-                res.status(500).json({
-                    msg: 'Internal Server Error'
-                });
-            }
-        });
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            msg: 'Internal Server Error'
-        });
-    }
+            res.status(201).json({
+                msg: 'Report Created Successfully'
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                msg: 'Internal Server Error'
+            });
+        }
+    });
 };
 
 
@@ -136,7 +119,7 @@ const getReportById = async (req, res) => {
 
 
 const updateReport = async (req, res) => {
-     upload(req, res, async function (err) {
+    upload.single('gambar')(req, res, async function (err) {
         if (err instanceof multer.MulterError) {
             // A Multer error occurred during file upload
             return res.status(422).json({
