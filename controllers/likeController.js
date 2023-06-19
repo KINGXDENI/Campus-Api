@@ -21,7 +21,7 @@ const addLike = async (req, res) => {
     }
 
     // Memperbarui nilai likes pada report dengan NIM pengguna
-    report.likes = nim;
+    report.likes = Number(nim);
     await report.save();
 
     res.status(200).json({
