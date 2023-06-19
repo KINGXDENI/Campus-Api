@@ -13,22 +13,15 @@ const addLike = async (req, res) => {
     // Menemukan report berdasarkan ID
     const report = await Report.findById(id);
 
-    // Memeriksa apakah report.likes adalah array
-    if (!Array.isArray(report.likes)) {
-      report.likes = [];
-    }
-
     // Memeriksa apakah pengguna dengan NIM yang sama sudah melike sebelumnya
-    if (report.likes.find(like => like.nim === nim)) {
+    if (report.likes === nim) {
       return res.status(409).json({
         message: 'You have already liked this report'
       });
     }
 
-    // Menambahkan like ke dalam array likes pada report
-    report.likes.push({
-      nim
-    });
+    // Memperbarui nilai likes pada report dengan NIM pengguna
+    report.likes = nim;
     await report.save();
 
     res.status(200).json({
@@ -41,6 +34,7 @@ const addLike = async (req, res) => {
     });
   }
 };
+
 
 
 const removeLike = async (req, res) => {
