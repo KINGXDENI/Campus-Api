@@ -8,7 +8,10 @@ const userRoutes = require("./routes/usersRoute");
 const reportRoutes = require("./routes/reportsRoute");
 const likeRoutes = require("./routes/likeRoute");
 const searchRoutes = require("./routes/searchRoute");
+const emailRoutes = require('./routes/emailRoutes');
 const errorHandler = require("./middlewares/error");
+
+
 
 
 // Connect to DB
@@ -27,6 +30,7 @@ app.use("/api/", userRoutes);
 app.use("/api/", reportRoutes);
 app.use("/api/", likeRoutes);
 app.use("/api/", searchRoutes);
+app.use("/api/", emailRoutes);
 app.get('/images/:filename', (req, res) => {
   const filename = req.params.filename;
   const imagePath = path.join(__dirname, 'public', 'images', filename);
