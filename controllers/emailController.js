@@ -17,11 +17,12 @@ const sendEmail = async (req, res) => {
         });
 
         const mailOptions = {
-            from: process.env.EMAIL_USERNAME,
+            from: 'Campus Report <' + process.env.EMAIL_USERNAME + '>',
             to: recipient,
             subject: subject,
             html: message,
         };
+
 
         await transporter.sendMail(mailOptions);
 
