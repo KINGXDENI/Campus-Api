@@ -39,7 +39,6 @@ const sendEmail = async (req, res) => {
 const sendEmailUser = async (req, res) => {
     try {
         const {
-            recipient,
             subject,
             message
         } = req.body;
@@ -54,7 +53,7 @@ const sendEmailUser = async (req, res) => {
 
         const mailOptions = {
             from: 'New Report <' + process.env.EMAIL_USERNAME + '>',
-            to: recipient,
+            to: process.env.EMAIL_USERNAME,
             subject: subject,
             html: message,
         };
