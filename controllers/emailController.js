@@ -17,7 +17,7 @@ const sendEmail = async (req, res) => {
         });
 
         const mailOptions = {
-            from: process.env.EMAIL_USERNAME,
+            from: 'Campus Report',
             to: recipient,
             subject: subject,
             text: message,

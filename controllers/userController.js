@@ -118,13 +118,23 @@ const register = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const {
-      userId
+      userIdornim
     } = req.params;
 
-    // Cari pengguna berdasarkan ID
-    const user = await User.findOne({
-      _id: userId
-    });
+    let user;
+
+    // Cek apakah userIdornim adalah ID (ObjectId) atau NIM (string)
+    if (userIdornim.length === 24 && /^[0-9a-fA-F]+$/.test(userIdornim)) {
+      // Cari pengguna berdasarkan ID
+      user = await User.findOne({
+        _id: userIdornim
+      });
+    } else {
+      // Cari pengguna berdasarkan NIM
+      user = await User.findOne({
+        nim: userIdornim
+      });
+    }
 
     if (!user) {
       return res.status(404).json({
@@ -141,6 +151,7 @@ const getUser = async (req, res) => {
     });
   }
 };
+
 
 const createUser = async (req, res, next) => {
   try {
