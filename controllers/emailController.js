@@ -52,7 +52,7 @@ const sendEmailUser = async (req, res) => {
         });
 
         const mailOptions = {
-            from: 'New Report <' + process.env.EMAIL_USERNAME + '>',
+            from: 'Info Report <' + process.env.EMAIL_USERNAME + '>',
             to: process.env.EMAIL_USERNAME,
             subject: subject,
             html: message,
