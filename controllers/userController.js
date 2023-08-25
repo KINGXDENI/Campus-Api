@@ -174,7 +174,7 @@ const getUsers = async (req, res, next) => {
       return {
         ...user.toObject(),
         profilePicture: user.profilePicture ?
-          `${req.protocol}://${req.get('host')}/public/profiles/${user.profilePicture}`:
+          `${req.protocol}://${req.get('host')}/profiles/${user.profilePicture}`:
           null
       };
     });
@@ -217,7 +217,7 @@ const getUser = async (req, res, next) => {
     const userWithProfileURL = {
       ...user.toObject(),
       profilePicture: user.profilePicture ?
-        `${req.protocol}://${req.get('host')}/public/profiles/${user.profilePicture}`:
+        `${req.protocol}://${req.get('host')}/profiles/${user.profilePicture}`:
         null
     };
 

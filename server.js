@@ -37,6 +37,12 @@ app.get('/images/:filename', (req, res) => {
   res.set('Content-Type', 'image/jpeg'); // Atur tipe konten gambar
   res.sendFile(imagePath);
 });
+app.get('/profiles/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const imagePath = path.join(__dirname, 'public', 'images', filename);
+  res.set('Content-Type', 'image/jpeg'); // Atur tipe konten gambar
+  res.sendFile(imagePath);
+});
 
 app.use(cors({
   origin: process.env.ORIGIN || 'http://localhost:5173', // Atur origin sesuai dengan URL frontend React
