@@ -31,6 +31,10 @@ const userSchema = new Schema({
   fakultas: {
     type: String,
   },
+  profilePicture: {
+    type: String,
+    default: 'default/profile.png', // Default profile image path
+  },
 }, {
   timestamps: true
 });
