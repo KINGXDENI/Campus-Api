@@ -143,7 +143,19 @@ const getUser = async (req, res) => {
     }
 
     // Mengembalikan data pengguna
-    return res.status(200).json(user);
+    res.status(200).json({
+      success: true,
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        nama: user.nama,
+        nim: user.nim,
+        jurusan: user.jurusan,
+        fakultas: user.fakultas,
+        profilePicture: user.profilePicture, // Include profile picture
+      },
+    });
   } catch (error) {
     console.error('Error while getting user:', error);
     return res.status(500).json({
