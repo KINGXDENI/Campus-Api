@@ -1,5 +1,23 @@
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+const path = require('path');
 const User = require('../models/UserModel');
+
+// Set up Multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/profiles'); 
+  },
+  filename: function (req, file, cb) {
+    // Generate a unique filename using hexadecimal timestamp
+    const uniqueFilename = Date.now().toString(16) + path.extname(file.originalname);
+    cb(null, uniqueFilename);
+  },
+});
+
+const upload = multer({
+  storage
+});
 
 const login = async (req, res) => {
   try {
@@ -115,11 +133,65 @@ const register = async (req, res) => {
   }
 };
 
-const getUser = async (req, res) => {
+const changeProfilePicture = async (req, res, next) => {
   try {
-    const {
-      userIdornim
-    } = req.params;
+    const userId = req.params.id; // You should provide the user's ID in the URL
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404);
+      return next(new Error("User not found"));
+    }
+
+    // Handle the profile picture upload
+    upload.single('profilePicture')(req, res, async (err) => {
+      if (err) {
+        return res.status(500).json({
+          message: 'Failed to upload profile picture'
+        });
+      }
+
+      // Update the profilePicture field in the user document
+      user.profilePicture = req.file ? req.file.filename : null;
+      await user.save();
+
+      res.status(200).json({
+        success: true,
+        message: 'Profile picture updated'
+      });
+    });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+};
+
+const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+
+    const usersWithProfileURLs = users.map(user => {
+      return {
+        ...user.toObject(),
+        profilePicture: user.profilePicture ?
+          `${req.protocol}://${req.get('host')}/public/profiles/${user.profilePicture}`:
+          null
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      users: usersWithProfileURLs,
+    });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+};
+
+const getUser = async (req, res, next) => {
+  try {
+    const userIdornim = req.params.userIdornim;
 
     let user;
 
@@ -142,20 +214,15 @@ const getUser = async (req, res) => {
       });
     }
 
+    const userWithProfileURL = {
+      ...user.toObject(),
+      profilePicture: user.profilePicture ?
+        `${req.protocol}://${req.get('host')}/public/profiles/${user.profilePicture}`:
+        null
+    };
+
     // Mengembalikan data pengguna
-    res.status(200).json({
-      success: true,
-      user: {
-        _id: user._id,
-        email: user.email,
-        role: user.role,
-        nama: user.nama,
-        nim: user.nim,
-        jurusan: user.jurusan,
-        fakultas: user.fakultas,
-        profilePicture: user.profilePicture, // Include profile picture
-      },
-    });
+    return res.status(200).json(userWithProfileURL);
   } catch (error) {
     console.error('Error while getting user:', error);
     return res.status(500).json({
@@ -202,26 +269,11 @@ const createUser = async (req, res, next) => {
       nim,
       jurusan,
       fakultas,
-      profilePicture: req.file ? req.file.filename : 'default/profile.png',
     });
 
     res.status(200).json({
       success: true,
       user,
-    });
-  } catch (error) {
-    console.log(error);
-    return next(error);
-  }
-};
-
-const getUsers = async (req, res, next) => {
-  try {
-    const users = await User.find();
-
-    res.status(200).json({
-      success: true,
-      users,
     });
   } catch (error) {
     console.log(error);
@@ -291,4 +343,5 @@ module.exports = {
   getUsers,
   updateUser,
   deleteUser,
+  changeProfilePicture,
 };
