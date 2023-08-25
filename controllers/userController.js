@@ -155,9 +155,12 @@ const changeProfilePicture = async (req, res, next) => {
       user.profilePicture = req.file ? req.file.filename : null;
       await user.save();
 
+      const newImageUrl = req.file ? `${req.protocol}://${req.get('host')}/profiles/${user.profilePicture}` : null;
+
       res.status(200).json({
         success: true,
-        message: 'Profile picture updated'
+        message: 'Profile picture updated',
+        newImageUrl: newImageUrl // Include the new image URL in the response
       });
     });
   } catch (error) {
@@ -165,6 +168,7 @@ const changeProfilePicture = async (req, res, next) => {
     return next(error);
   }
 };
+
 
 const getUsers = async (req, res, next) => {
   try {
