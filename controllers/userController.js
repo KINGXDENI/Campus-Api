@@ -202,6 +202,7 @@ const createUser = async (req, res, next) => {
       nim,
       jurusan,
       fakultas,
+      profilePicture: req.file ? req.file.filename : 'default/profile.png',
     });
 
     res.status(200).json({
