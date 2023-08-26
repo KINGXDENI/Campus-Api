@@ -6,7 +6,7 @@ const User = require('../models/UserModel');
 // Set up Multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './public/profiles'); 
+    cb(null, './public/profiles');
   },
   filename: function (req, file, cb) {
     // Generate a unique filename using hexadecimal timestamp
@@ -178,8 +178,7 @@ const getUsers = async (req, res, next) => {
       return {
         ...user.toObject(),
         profilePicture: user.profilePicture ?
-          `${req.protocol}://${req.get('host')}/profiles/${user.profilePicture}`:
-          null
+          `${req.protocol}://${req.get('host')}/profiles/${user.profilePicture}` : null
       };
     });
 
@@ -221,8 +220,7 @@ const getUser = async (req, res, next) => {
     const userWithProfileURL = {
       ...user.toObject(),
       profilePicture: user.profilePicture ?
-        `${req.protocol}://${req.get('host')}/profiles/${user.profilePicture}`:
-        null
+        `${req.protocol}://${req.get('host')}/profiles/${user.profilePicture}` : null
     };
 
     // Mengembalikan data pengguna
@@ -339,6 +337,78 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+const changePassword = async (req, res, next) => {
+  const userId = req.params.id;
+  const {
+    oldPassword,
+    newPassword
+  } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404);
+      return next(new Error("User not found"));
+    }
+
+    console.log("oldPassword:", oldPassword); // Tambahkan log ini untuk memeriksa nilai oldPassword
+
+    const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({
+        message: 'Invalid old password'
+      });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedNewPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password changed successfully',
+    });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+};
+
+
+const changePasswordWithoutOld = async (req, res, next) => {
+  const userId = req.params.id;
+  const {
+    newPassword
+  } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404);
+      return next(new Error("User not found"));
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedNewPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password changed successfully',
+    });
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+};
+
+
+
 module.exports = {
   login,
   register,
@@ -348,4 +418,6 @@ module.exports = {
   updateUser,
   deleteUser,
   changeProfilePicture,
+  changePassword,
+  changePasswordWithoutOld
 };
