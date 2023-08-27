@@ -217,6 +217,11 @@ const deleteReport = async (req, res) => {
             fs.unlinkSync(filepath);
         }
 
+        // Menghapus semua data like yang terkait dengan report yang akan dihapus
+        await Like.deleteMany({
+            report: report._id,
+        });
+
         await Report.deleteOne({
             _id: req.params.id,
         });
@@ -231,6 +236,7 @@ const deleteReport = async (req, res) => {
         });
     }
 };
+
 
 
 
