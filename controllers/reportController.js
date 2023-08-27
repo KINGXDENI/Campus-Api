@@ -4,6 +4,7 @@ const Report = require('../models/ReportModel');
 const multer = require('multer');
 
 const crypto = require('crypto');
+const Like = require('../models/likeModel');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
