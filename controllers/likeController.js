@@ -70,7 +70,7 @@ const getLikesByReportId = async (req, res) => {
     });
 
     res.status(200).json({
-      likes
+      result: likes,
     });
   } catch (error) {
     console.error(error);
