@@ -577,6 +577,7 @@ body {
 
 .home {
     background-color: #eef1f6;
+    min-height: 100vh;
 }
 
 #home {
