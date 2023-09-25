@@ -581,7 +581,7 @@ body {
 
 #home {
     padding-top: 7rem;
-    padding-bottom: 3rem
+    padding-bottom: 5rem
 }
 
 .konten {
@@ -1092,9 +1092,6 @@ h5 {
         margin-top: 28rem !important
     }
 
-    .home {
-        height: 520px !important
-    }
 
     .konten {
         width: 100%;
