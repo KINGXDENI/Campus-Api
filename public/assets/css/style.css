@@ -10,7 +10,7 @@ body {
     font-family: Quicksand, sans-serif;
     display: flex;
     flex-direction: column;
-    min-height: 100vh
+    min-height: 100vh;
 }
 
 .headers {
@@ -577,7 +577,6 @@ body {
 
 .home {
     background-color: #eef1f6;
-    height: 670px
 }
 
 #home {
