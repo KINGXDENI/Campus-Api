@@ -47,6 +47,9 @@ app.get('/profiles/:filename', (req, res) => {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'view', 'index.html'));
 });
+app.get('/adduser', (req, res) => {
+  res.sendFile(path.join(__dirname, 'view', 'FormRegist.html'));
+});
 app.use(cors({
   origin: process.env.ORIGIN || 'http://localhost:5173', // Atur origin sesuai dengan URL frontend React
   credentials: true, // Jika Anda mengizinkan pengiriman cookie atau header lain dalam permintaan

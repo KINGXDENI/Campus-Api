@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Registrasi User</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Sweetalert -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.29/dist/sweetalert2.min.css">
+    <link rel="icon" type="image" href="assets/logo.jpg">
+</head>
+
+<body>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Form Registrasi</h2>
+                        <form id="registrationForm">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Role</label>
+                                <select class="form-select" id="role" name="role">
+                                    <option value="user">User</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nama" class="form-label">Nama</label>
+                                <input type="text" class="form-control" id="nama" name="nama" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nim" class="form-label">NIM</label>
+                                <input type="text" class="form-control" id="nim" name="nim" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="jurusan" class="form-label">Jurusan</label>
+                                <select class="form-select" id="jurusan" name="jurusan" required>
+                                    <option value="Teknik Informatika">Teknik Informatika</option>
+                                    <option value="Teknik Elektro">Teknik Elektro</option>
+                                    <option value="Manajemen">Manajemen</option>
+                                    <!-- Tambahkan opsi-opsi jurusan lain sesuai kebutuhan -->
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="fakultas" class="form-label">Fakultas</label>
+                                <select class="form-select" id="fakultas" name="fakultas" required>
+                                    <option value="Ilmu Komputer">Ilmu Komputer</option>
+                                    <option value="Teknik">Teknik</option>
+                                    <option value="Ekonomi">Ekonomi</option>
+                                    <!-- Tambahkan opsi-opsi fakultas lain sesuai kebutuhan -->
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Ambil data dari form
+            const formData = new FormData(event.target);
+
+            // Ubah FormData ke objek JSON
+            const formDataObject = {};
+            formData.forEach((value, key) => {
+                formDataObject[key] = value;
+            });
+
+            // Kirim data ke API
+            fetch('https://api.campusreports.site/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formDataObject)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    Swal.fire({
+                        title: 'Registrasi berhasil!',
+                        text: 'Selamat Anda telah berhasil registrasi.',
+                        icon: 'success',
+                        timer: 1000, // Waktu (dalam milidetik) sebelum pesan ditutup otomatis
+                        showConfirmButton: false // Menyembunyikan tombol "OK"
+                    });
+
+                    // Menghapus isi inputan setelah pengiriman data berhasil
+                    document.getElementById('registrationForm').reset();
+                })
+                .catch(error => {
+                    console.error(error);
+                    Swal.fire({
+                        title: 'Registrasi gagal!',
+                        text: 'Terjadi kesalahan saat melakukan registrasi.',
+                        icon: 'error',
+                        timer: 1000, // Waktu (dalam milidetik) sebelum pesan ditutup otomatis
+                        showConfirmButton: false // Menyembunyikan tombol "OK"
+                    });
+                    document.getElementById('registrationForm').reset();
+                });
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <!-- Sweetalert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.29/dist/sweetalert2.all.min.js"></script>
+</body>
+
+</html>
