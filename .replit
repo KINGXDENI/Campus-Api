@@ -1,6 +1,6 @@
 language="nodejs"
-run="pm2 start index.js && pm2 save && pm2 logs"
-entrypoint = "index.js"
+run="pm2 start server.js && pm2 save && pm2 logs"
+entrypoint = "server.js"
 hidden = [".config", "package-lock.json"]
 
 [languages]
@@ -43,7 +43,7 @@ type = "request"
 console = "externalTerminal"
 cwd = "."
 pauseForSourceMap = false
-program = "./index.js"
+program = "./server.js"
 request = "launch"
 sourceMaps = true
 stopOnEntry = false
