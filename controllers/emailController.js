@@ -11,8 +11,8 @@ const sendEmail = async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.EMAIL_USERNAME, // Ganti dengan email pengirim
-                pass: process.env.EMAIL_PASSWORD, // Ganti dengan password email pengirim
+                user: process.env.EMAIL_USERNAME, 
+                pass: process.env.EMAIL_PASSWORD,
             },
         });
 
@@ -82,8 +82,8 @@ const sendEmailUser = async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.EMAIL_USERNAME, // Ganti dengan email pengirim
-                pass: process.env.EMAIL_PASSWORD, // Ganti dengan password email pengirim
+                user: process.env.EMAIL_USERNAME,
+                pass: process.env.EMAIL_PASSWORD,
             },
         });
 
